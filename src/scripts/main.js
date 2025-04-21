@@ -1,36 +1,34 @@
 'use strict';
 
-const listOfLi = document.querySelectorAll('.tree li');
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.tree li').forEach((li) => {
+    if (li.querySelector('ul')) {
+      for (const node of li.childNodes) {
+        if (
+          node.nodeType === Node.TEXT_NODE &&
+          node.textContent.trim() !== ''
+        ) {
+          const span = document.createElement('span');
 
-for (const li of listOfLi) {
-  if (li.firstElementChild && li.firstElementChild.tagName === 'UL') {
-    const nestedUl = li.firstElementChild;
-
-    let directText = '';
-
-    for (const node of li.childNodes) {
-      if (node.nodeType === Node.TEXT_NODE) {
-        directText += node.textContent;
+          span.textContent = node.textContent.trim();
+          li.insertBefore(span, node);
+          li.removeChild(node);
+          break;
+        }
       }
     }
+  });
 
-    const savedUl = li.removeChild(nestedUl);
+  const tree = document.querySelector('.tree');
 
-    li.textContent = '';
+  tree.addEventListener('click', (e) => {
+    if (e.target.tagName === 'SPAN') {
+      const li = e.target.parentElement;
+      const subTree = li.querySelector('ul');
 
-    const span = document.createElement('span');
-
-    span.textContent = directText.trim();
-    li.appendChild(span);
-
-    li.appendChild(savedUl);
-
-    span.addEventListener('click', () => {
-      if (savedUl.style.display === 'none') {
-        savedUl.style.display = '';
-      } else {
-        savedUl.style.display = 'none';
+      if (subTree) {
+        subTree.style.display = subTree.style.display === 'none' ? '' : 'none';
       }
-    });
-  }
-}
+    }
+  });
+});
