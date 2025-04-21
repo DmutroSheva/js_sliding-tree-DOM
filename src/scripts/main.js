@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         textNode.parentNode.insertBefore(span, textNode);
         textNode.remove();
 
-        childUl.style.display = 'block';
+        childUl.style.display = 'none';
 
         span.addEventListener('click', () => {
           childUl.style.display =
