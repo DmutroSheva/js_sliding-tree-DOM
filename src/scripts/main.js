@@ -1,31 +1,36 @@
 'use strict';
 
-document.addEventListener('DOMContentLoaded', () => {
-  const tree = document.querySelector('.tree');
+const listOfLi = document.querySelectorAll('.tree li');
 
-  tree.querySelectorAll('li').forEach((li) => {
-    const childUl = li.querySelector('ul');
+for (const li of listOfLi) {
+  if (li.firstElementChild && li.firstElementChild.tagName === 'UL') {
+    const nestedUl = li.firstElementChild;
 
-    if (childUl) {
-      const textNode = Array.from(li.childNodes).find(
-        (node) =>
-          node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== '',
-      );
+    let directText = '';
 
-      if (textNode) {
-        const span = document.createElement('span');
-
-        span.textContent = textNode.textContent.trim();
-        textNode.parentNode.insertBefore(span, textNode);
-        textNode.remove();
-
-        childUl.style.display = 'none';
-
-        span.addEventListener('click', () => {
-          childUl.style.display =
-            childUl.style.display === 'none' ? 'block' : 'none';
-        });
+    for (const node of li.childNodes) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        directText += node.textContent;
       }
     }
-  });
-});
+
+    const savedUl = li.removeChild(nestedUl);
+
+    li.textContent = '';
+
+    const span = document.createElement('span');
+
+    span.textContent = directText.trim();
+    li.appendChild(span);
+
+    li.appendChild(savedUl);
+
+    span.addEventListener('click', () => {
+      if (savedUl.style.display === 'none') {
+        savedUl.style.display = '';
+      } else {
+        savedUl.style.display = 'none';
+      }
+    });
+  }
+}
